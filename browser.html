@@ -1,0 +1,314 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Plain Text Code Viewer</title>
+    <style>
+        body {
+            font-family: monospace;
+            background: #f0f0f0;
+            padding: 20px;
+        }
+        pre {
+            white-space: pre-wrap;
+            background: #fff;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+        }
+    </style>
+</head>
+<body>
+
+<h1>Plain Text Code Viewer</h1>
+
+<h2>config.php</h2>
+<pre>
+&lt;?php
+
+$localhost = &quot;localhost&quot;;
+$username = &quot;root&quot;;
+$password = &quot;&quot;;
+$dbname = &quot;knoxed_test&quot;;
+$conn = mysqli_connect($localhost,$username,$password,$dbname);
+if(!$conn){
+    echo &quot;ERROR &quot;.mysqli_error($conn);
+}
+?&gt;
+</pre>
+
+<h2>index.php</h2>
+<pre>
+&lt;?php
+    include_once &#39;config.php&#39;;
+    if ($_SERVER[&#39;REQUEST_METHOD&#39;] == &quot;POST&quot;) {
+        $fullname = mysqli_real_escape_string($conn, $_POST[&#39;fullname&#39;]);
+        $email    = mysqli_real_escape_string($conn, $_POST[&#39;email&#39;]);
+        $phone    = mysqli_real_escape_string($conn, $_POST[&#39;phone&#39;]);
+        $city     = mysqli_real_escape_string($conn, $_POST[&#39;city&#39;]);
+        $password = password_hash($_POST[&#39;password&#39;], PASSWORD_DEFAULT);
+        $optin = isset($_POST[&#39;optin&#39;]) ? 1 : 0;
+        $query = &quot;INSERT INTO `emp` (`fullname`, `email`, `phone`, `city`, `password`, `optin`, `modified_at`)
+              VALUES (&#39;$fullname&#39;, &#39;$email&#39;, &#39;$phone&#39;, &#39;$city&#39;, &#39;$password&#39;, $optin, NOW())&quot;;
+        $insert = mysqli_query($conn, $query);
+        if ($insert) {
+            echo &quot;&lt;script&gt;alert(&#39;Data Inserted Successfully&#39;);&lt;/script&gt;&quot;;
+            header(&quot;Location: display.php&quot;);
+        } else {
+            echo &quot;&lt;script&gt;alert(&#39;Data Not Inserted: &quot; . mysqli_error($conn) . &quot;&#39;);&lt;/script&gt;&quot;;
+        }
+    }
+?&gt;
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Bootstrap demo&lt;/title&gt;
+    &lt;link href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div class=&quot;container&quot; style=&quot;justify-content:center&quot;&gt;
+        &lt;div class=&quot;card shadow&quot; style=&quot;width:50%&quot;&gt;
+            &lt;div class=&quot;card-header bg-dark text-white text-center&quot;&gt;
+                Form
+            &lt;/div&gt;
+            &lt;div class=&quot;card-body&quot;&gt;
+                &lt;form method=&quot;POST&quot;&gt;
+                    &lt;div class=&quot;mb-3&quot;&gt;
+                        &lt;label class=&quot;form-label&quot;&gt;Full Name&lt;/label&gt;
+                        &lt;input type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;fullname&quot;&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class=&quot;mb-3&quot;&gt;
+                        &lt;label class=&quot;form-label&quot;&gt;Email address&lt;/label&gt;
+                        &lt;input type=&quot;email&quot; class=&quot;form-control&quot; name=&quot;email&quot;&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class=&quot;mb-3&quot;&gt;
+                        &lt;label class=&quot;form-label&quot;&gt;Phone&lt;/label&gt;
+                        &lt;input type=&quot;number&quot; class=&quot;form-control&quot; name=&quot;phone&quot;&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class=&quot;mb-3&quot;&gt;
+                        &lt;label class=&quot;form-label&quot;&gt;City&lt;/label&gt;
+                        &lt;select name=&quot;city&quot; class=&quot;form-control&quot;&gt;
+                            &lt;option value=&quot;&quot;&gt;Select City&lt;/option&gt;
+                            &lt;option value=&quot;Mumbai&quot;&gt;Mumbai&lt;/option&gt;
+                            &lt;option value=&quot;Delhi&quot;&gt;Delhi&lt;/option&gt;
+                            &lt;option value=&quot;Kolkata&quot;&gt;Kolkata&lt;/option&gt;
+                            &lt;option value=&quot;Chennai&quot;&gt;Chennai&lt;/option&gt;
+                        &lt;/select&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class=&quot;mb-3&quot;&gt;
+                        &lt;label class=&quot;form-label&quot;&gt;Password&lt;/label&gt;
+                        &lt;input type=&quot;password&quot; class=&quot;form-control&quot; name=&quot;password&quot;&gt;
+                    &lt;/div&gt;
+
+                    &lt;div class=&quot;mb-3 form-check&quot;&gt;
+                        &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; name=&quot;optin&quot;&gt;
+                        &lt;label class=&quot;form-check-label&quot;&gt;Check me out&lt;/label&gt;
+                    &lt;/div&gt;
+
+                    &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot;&gt;Submit&lt;/button&gt;
+                &lt;/form&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+</pre>
+
+<h2>display.php</h2>
+<pre>
+&lt;?php
+    include_once &#39;config.php&#39;;
+    $limit = 3;
+    if (isset($_GET[&#39;page&#39;])) {
+        $page = $_GET[&#39;page&#39;];
+    } else {
+        $page = 1;
+    }
+    $offset = ($page - 1) * $limit;
+    $select = mysqli_query($conn, &quot;SELECT * FROM `emp` ORDER BY id DESC LIMIT {$offset}, {$limit}&quot;);
+?&gt;
+
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Bootstrap demo&lt;/title&gt;
+    &lt;link href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+&lt;div class=&quot;container&quot;&gt;
+    &lt;div class=&quot;row&quot;&gt;
+        &lt;div class=&quot;card shadow&quot;&gt;
+            &lt;div class=&quot;card-header bg-dark text-white text-center&quot;&gt;
+                Data
+            &lt;/div&gt;
+            &lt;div class=&quot;card-body mt-5  &quot;&gt;
+                &lt;table class=&quot;table table-hover table-bordered text-center&quot;&gt;
+                    &lt;thead style=&quot;background-color:#000; color:#fff&quot;&gt;
+                        &lt;tr&gt;
+                            &lt;td&gt;Sr No&lt;/td&gt;
+                            &lt;td&gt;Full Name&lt;/td&gt;
+                            &lt;td&gt;Email&lt;/td&gt;
+                            &lt;td&gt;Phone&lt;/td&gt;
+                            &lt;td&gt;City&lt;/td&gt;
+                            &lt;td&gt;Optin&lt;/td&gt;
+                            &lt;td&gt;Created At&lt;/td&gt;
+                            &lt;td&gt;Modified At&lt;/td&gt;
+                            &lt;td&gt;Action&lt;/td&gt;
+                        &lt;/tr&gt;
+                    &lt;/thead&gt;
+
+                    &lt;tbody&gt;
+                        &lt;?php $sr = $offset + 1;
+                        while ($row = mysqli_fetch_assoc($select)) {?&gt;
+                        &lt;tr&gt;
+                            &lt;td&gt;&lt;?php echo $sr++ ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;fullname&#39;]; ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;email&#39;]; ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;phone&#39;]; ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;city&#39;]; ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;optin&#39;]; ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;created_at&#39;]; ?&gt;&lt;/td&gt;
+                            &lt;td&gt;&lt;?php echo $row[&#39;modified_at&#39;]; ?&gt;&lt;/td&gt;
+
+                            &lt;td&gt;
+                                &lt;a href=&quot;update.php?id=&lt;?php echo $row[&#39;id&#39;];?&gt;&quot; class=&quot;btn btn-primary&quot;&gt;Edit&lt;/a&gt; &amp;nbsp;&amp;nbsp;
+                                &lt;a href=&quot;#&quot; class=&quot;btn btn-danger&quot;&gt;Delete&lt;/a&gt;
+                            &lt;/td&gt;
+                        &lt;/tr&gt;
+
+                        &lt;?php }?&gt;
+                    &lt;/tbody&gt;
+
+                &lt;/table&gt;
+                &lt;?php
+                    $sql = mysqli_query($conn, &quot;SELECT * FROM `emp`&quot;);
+                    if (mysqli_num_rows($sql) &gt; 0) {
+                        $total_records = mysqli_num_rows($sql);
+                        $total_pages   = ceil($total_records / $limit);
+                    ?&gt;
+                &lt;div class=&quot;text-center&quot;&gt;
+ &lt;nav aria-label=&quot;Page navigation example&quot;&gt;
+  &lt;ul class=&quot;pagination&quot;&gt;
+    &lt;li class=&quot;page-item&quot;&gt;
+      &lt;a class=&quot;page-link &lt;?php echo $page &lt;= 1 ? &#39;disabled&#39; : &#39;&#39;?&gt;&quot; href=&quot;display.php?page=&lt;?php echo $page - 1?&gt;&quot; aria-label=&quot;Previous&quot;&gt;
+        &lt;span aria-hidden=&quot;true&quot;&gt;&amp;laquo;&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+   &lt;?php for ($i = 1; $i &lt;= $total_pages; $i++) {?&gt;
+    &lt;li class=&quot;page-item&lt;?php echo($i == $page) ? &#39;active&#39; : &#39;&#39; ?&gt;&quot;&gt;&lt;a class=&quot;page-link&quot; href=&quot;display.php?page=&lt;?php echo $i ?&gt;&quot;&gt;&lt;?php echo $i; ?&gt;&lt;/a&gt;&lt;/li&gt;
+   &lt;?php }?&gt;
+    &lt;li class=&quot;page-item &lt;?php echo $page &gt;= $total_pages ? &#39;disabled&#39; : &#39;&#39;?&gt;&quot;&gt;
+      &lt;a class=&quot;page-link&quot; href=&quot;display.php?page=&lt;?php echo $page + 1?&gt;&quot; aria-label=&quot;Next&quot;&gt;
+        &lt;span aria-hidden=&quot;true&quot;&gt;&amp;raquo;&lt;/span&gt;
+      &lt;/a&gt;
+    &lt;/li&gt;
+  &lt;/ul&gt;
+&lt;/nav&gt;
+&lt;?php }?&gt;
+                &lt;/div&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+&lt;/div&gt;
+&lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+
+<h2>update.php</h2>
+<pre>
+&lt;?php
+    include_once &#39;config.php&#39;;
+    if (isset($_GET[&#39;id&#39;])) {
+        $id = $_GET[&#39;id&#39;];
+        $select = mysqli_query($conn, &quot;SELECT * FROM `emp` WHERE `id` = $id&quot;);
+        $row = mysqli_fetch_assoc($select);
+        if (isset($_POST[&#39;submit&#39;])) {
+            $fullname = mysqli_real_escape_string($conn, $_POST[&#39;fullname&#39;]);
+            $email    = mysqli_real_escape_string($conn, $_POST[&#39;email&#39;]);
+            $phone    = mysqli_real_escape_string($conn, $_POST[&#39;phone&#39;]);
+            $city     = mysqli_real_escape_string($conn, $_POST[&#39;city&#39;]);
+            $optin = isset($_POST[&#39;optin&#39;]) ? 1 : 0;
+            $sql = &quot;UPDATE `emp` SET`fullname`=&#39;$fullname&#39;,`email`=&#39;$email&#39;,`phone`=&#39;$phone&#39;,`city`=&#39;$city&#39;,`optin`=&#39;$optin&#39;,`modified_at`=NOW() WHERE `id` = &#39;$id&#39;&quot;;
+            $update = mysqli_query($conn, $sql);
+            if ($update) {
+                echo &quot;&lt;script&gt;alert(&#39;Data Updated Successfully&#39;);
+         window.location.href=&#39;display.php&#39;;
+         &lt;/script&gt;&quot;;
+            } else {
+                echo &quot;&lt;script&gt;alert(&#39;Data Not Updated&#39;);
+         window.location.href=&#39;display.php&#39;;
+         &lt;/script&gt;&quot;;
+            }
+        }
+    }
+?&gt;
+&lt;!doctype html&gt;
+&lt;html lang=&quot;en&quot;&gt;
+  &lt;head&gt;
+    &lt;meta charset=&quot;utf-8&quot;&gt;
+    &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1&quot;&gt;
+    &lt;title&gt;Bootstrap demo&lt;/title&gt;
+    &lt;link href=&quot;https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css&quot; rel=&quot;stylesheet&quot;&gt;
+  &lt;/head&gt;
+  &lt;body&gt;
+    &lt;div class=&quot;container&quot; style=&quot;justify-content:center&quot;&gt;
+        &lt;div class=&quot;card shadow&quot; style=&quot;width:50%&quot;&gt;
+            &lt;div class=&quot;card-header bg-dark text-white text-center&quot;&gt;
+                Form
+            &lt;/div&gt;
+            &lt;div class=&quot;card-body&quot;&gt;
+                &lt;form method=&quot;POST&quot;&gt;
+                    &lt;div class=&quot;mb-3&quot;&gt;
+    &lt;input type=&quot;text&quot; class=&quot;form-control&quot; disabled hidden value=&quot;&lt;?php echo $row[&#39;id&#39;];?&gt;&quot;&gt;
+
+    &lt;label for=&quot;fulname&quot; class=&quot;form-label&quot;&gt;Full Name&lt;/label&gt;
+    &lt;input type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;fullname&quot; value=&quot;&lt;?php echo $row[&#39;fullname&#39;];?&gt;&quot;&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;mb-3&quot;&gt;
+    &lt;label class=&quot;form-label&quot;&gt;Email address&lt;/label&gt;
+    &lt;input type=&quot;email&quot; class=&quot;form-control&quot; name=&quot;email&quot; value=&quot;&lt;?php echo $row[&#39;email&#39;];?&gt;&quot;&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;mb-3&quot;&gt;
+      &lt;label class=&quot;form-label&quot;&gt;Phone&lt;/label&gt;
+    &lt;input type=&quot;text&quot; class=&quot;form-control&quot; name=&quot;phone&quot; value=&quot;&lt;?php echo $row[&#39;phone&#39;];?&gt;&quot;&gt;
+  &lt;/div&gt;
+
+  &lt;div class=&quot;mb-3&quot;&gt;
+      &lt;label class=&quot;form-label&quot;&gt;City&lt;/label&gt;
+       &lt;select name=&quot;city&quot; class=&quot;form-control&quot;&gt;
+                            &lt;option value=&quot;&quot;&gt;Select City&lt;/option&gt;
+                            &lt;option value=&quot;Mumbai&quot; &lt;?php echo ($row[&#39;city&#39;] == &#39;Mumbai&#39;) ? &#39;selected&#39; : &#39;&#39;?&gt;&gt;Mumbai&lt;/option&gt;
+                            &lt;option value=&quot;Delhi&quot; &lt;?php echo ($row[&#39;city&#39;] == &#39;Delhi&#39; ? &#39;selected&#39; : &#39;&#39;)?&gt;&gt;Delhi&lt;/option&gt;
+                            &lt;option value=&quot;Kolkata&quot; &lt;?php echo ($row[&#39;city&#39;] == &#39;Kolkata&#39; ? &#39;selected&#39; : &#39;&#39;)?&gt;&gt;Kolkata&lt;/option&gt;
+                            &lt;option value=&quot;Chennai&quot; &lt;?php echo ($row[&#39;city&#39;] == &#39;Chennai&#39; ? &#39;selected&#39; : &#39;&#39;)?&gt;&gt;Chennai&lt;/option&gt;
+                        &lt;/select&gt;
+&lt;/div&gt;
+
+  &lt;div class=&quot;mb-3 form-check&quot;&gt;
+    &lt;input type=&quot;checkbox&quot; class=&quot;form-check-input&quot; name=&quot;optin&quot; &lt;?php echo ($row[&#39;optin&#39;] == 1 ? &#39;checked&#39; : &#39;&#39;)?&gt;&gt;
+    &lt;label class=&quot;form-check-label&quot;&gt;Check me out&lt;/label&gt;
+  &lt;/div&gt;
+
+  &lt;button type=&quot;submit&quot; class=&quot;btn btn-primary&quot; name=&quot;submit&quot;&gt;Submit&lt;/button&gt;
+&lt;/form&gt;
+            &lt;/div&gt;
+        &lt;/div&gt;
+    &lt;/div&gt;
+  &lt;/body&gt;
+&lt;/html&gt;
+
+</pre>
+
+</body>
+</html>
